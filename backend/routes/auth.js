@@ -41,11 +41,15 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id, role: user.role }, 'secret', { expiresIn: '1h' });
-        res.json({ token });
+
+        // Send back the token and user role to the frontend
+        res.json({ token, role: user.role });
     } catch (err) {
+        console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
+
 
 // Protected Route to Get User Info
 router.get('/me', authMiddleware, async (req, res) => {
