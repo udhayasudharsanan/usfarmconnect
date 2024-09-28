@@ -31,7 +31,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('https://usfarmconnect.onrender.com/api/auth/login', {
+    const response = await fetch('https://your-backend-url.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -42,20 +42,29 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (response.ok) {
-        localStorage.setItem('token', data.token);  // Store JWT token
-        alert('Login successful!');
+        alert('Successfully logged in!');
+
+        // Assuming the role is returned from the backend in the token or user data
+        const { token, role } = data; // You should get the user role from the backend
         
-        if (data.role === 'farmer') {
-            window.location.href = 'farmer-dashboard.html';
-        } else if (data.role === 'consumer') {
-            window.location.href = 'consumer-dashboard.html';
-        } else if (data.role === 'admin') {
+        // Store the token in localStorage for authentication on other pages (optional)
+        localStorage.setItem('token', token);
+
+        // Redirect based on role
+        if (role === 'admin') {
             window.location.href = 'admin-dashboard.html';
+        } else if (role === 'farmer') {
+            window.location.href = 'farmer-dashboard.html';
+        } else if (role === 'consumer') {
+            window.location.href = 'consumer-dashboard.html';
+        } else {
+            alert('Unknown role!');
         }
     } else {
         alert('Login failed: ' + data.msg);
     }
 });
+
 // Fetch and display products (for consumers)
 document.addEventListener('DOMContentLoaded', async () => {
     const productList = document.getElementById('productList');
