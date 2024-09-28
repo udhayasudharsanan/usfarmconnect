@@ -5,9 +5,9 @@ document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value; // farmer/consumer/admin
+    const role = document.getElementById('role').value;
 
-    const response = await fetch('https://usfarmconnect.onrender.com/api/auth/signup', {
+    const response = await fetch('https://your-backend-url.onrender.com/api/auth/signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -19,11 +19,12 @@ document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
 
     if (response.ok) {
         alert('Signup successful! Please log in.');
-        window.location.href = 'login.html';  // Redirect to login page after signup
+        window.location.href = 'login.html';  // Redirect to login after successful signup
     } else {
         alert('Signup failed: ' + data.msg);
     }
 });
+
 // Login Function
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -43,11 +44,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
 
     if (response.ok) {
         alert('Successfully logged in!');
-
-        // Assuming the role is returned from the backend in the token or user data
-        const { token, role } = data; // You should get the user role from the backend
-        
-        // Store the token in localStorage for authentication on other pages (optional)
+        const { token, role } = data;
         localStorage.setItem('token', token);
 
         // Redirect based on role
@@ -65,71 +62,52 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     }
 });
 
-// Fetch and display products (for consumers)
-document.addEventListener('DOMContentLoaded', async () => {
-    const productList = document.getElementById('productList');
-    
-    if (productList) {
-        const response = await fetch('https://usfarmconnect.onrender.com/api/products');
-        const products = await response.json();
-
-        products.forEach(product => {
-            const productElement = document.createElement('div');
-            productElement.classList.add('product-card');
-            productElement.innerHTML = `
-                <h3>${product.name}</h3>
-                <p>Quantity: ${product.quantity}</p>
-                <p>Price: $${product.price}</p>
-                <p>Farmer: ${product.farmer.name}</p>
-            `;
-            productList.appendChild(productElement);
-        });
-    }
-});
-// Fetch and display products (for consumers)
-document.addEventListener('DOMContentLoaded', async () => {
-    const productList = document.getElementById('productList');
-    
-    if (productList) {
-        const response = await fetch('https://usfarmconnect.onrender.com/api/products');
-        const products = await response.json();
-
-        products.forEach(product => {
-            const productElement = document.createElement('div');
-            productElement.classList.add('product-card');
-            productElement.innerHTML = `
-                <h3>${product.name}</h3>
-                <p>Quantity: ${product.quantity}</p>
-                <p>Price: $${product.price}</p>
-                <p>Farmer: ${product.farmer.name}</p>
-            `;
-            productList.appendChild(productElement);
-        });
-    }
-});
-// Add product (for farmers)
+// Add Product (Farmer)
 document.getElementById('addProductForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const name = document.getElementById('productName').value;
     const quantity = document.getElementById('quantity').value;
     const price = document.getElementById('price').value;
-    const token = localStorage.getItem('token');  // Get JWT token
+    const token = localStorage.getItem('token');  // Get the token from localStorage
 
-    const response = await fetch('https://usfarmconnect.onrender.com/api/products/add', {
+    const response = await fetch('https://your-backend-url.onrender.com/api/products/add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'x-auth-token': token  // Include token in request header
+            'x-auth-token': token  // Include token in the headers
         },
         body: JSON.stringify({ name, quantity, price })
     });
 
     if (response.ok) {
         alert('Product added successfully!');
-        window.location.reload();
+        window.location.reload();  // Reload page after adding product
     } else {
         const data = await response.json();
         alert('Failed to add product: ' + data.msg);
     }
 });
+
+// Fetch and Display Products (For Consumers)
+document.addEventListener('DOMContentLoaded', async () => {
+    const productList = document.getElementById('productList');
+
+    if (productList) {
+        const response = await fetch('https://your-backend-url.onrender.com/api/products');
+        const products = await response.json();
+
+        products.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product-card');
+            productElement.innerHTML = `
+                <h3>${product.name}</h3>
+                <p>Quantity: ${product.quantity}</p>
+                <p>Price: $${product.price}</p>
+                <p>Farmer: ${product.farmer.name}</p>
+            `;
+            productList.appendChild(productElement);
+        });
+    }
+});
+
