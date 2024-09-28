@@ -1,8 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const authMiddleware = require('../middleware/authMiddleware');
+const User = require('../models/User');  // Make sure you have a User model
 const router = express.Router();
 
 // Signup Route
@@ -16,11 +15,15 @@ router.post('/signup', async (req, res) => {
         }
 
         user = new User({ name, email, password, role });
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+
         await user.save();
 
-        const token = jwt.sign({ id: user._id, role: user.role }, 'secret', { expiresIn: '1h' });
-        res.json({ token });
+        const token = jwt.sign({ id: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
+        res.json({ token, role: user.role });
     } catch (err) {
+        console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
@@ -40,15 +43,15 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ id: user._id, role: user.role }, 'secret', { expiresIn: '1h' });
-
-        // Send back the token and user role to the frontend
+        const token = jwt.sign({ id: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
         res.json({ token, role: user.role });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
+
+module.exports = router;
 
 
 // Protected Route to Get User Info

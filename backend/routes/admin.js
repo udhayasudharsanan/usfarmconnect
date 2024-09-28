@@ -13,6 +13,7 @@ router.get('/users', authMiddleware, async (req, res) => {
         const users = await User.find();
         res.json(users);
     } catch (err) {
+        console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
@@ -27,8 +28,10 @@ router.put('/certify/:farmerId', authMiddleware, async (req, res) => {
         const farmer = await User.findByIdAndUpdate(req.params.farmerId, { isCertified: true }, { new: true });
         res.json(farmer);
     } catch (err) {
+        console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
 
 module.exports = router;
+
