@@ -7,7 +7,7 @@ document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value; // farmer/consumer/admin
 
-    const response = await fetch('http://localhost:5000/api/auth/signup', {
+    const response = await fetch('https://usfarmconnect.onrender.com/api/auth/signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('http://localhost:5000/api/auth/login', {
+    const response = await fetch('https://usfarmconnect.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const productList = document.getElementById('productList');
     
     if (productList) {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch('https://usfarmconnect.onrender.com/api/products');
         const products = await response.json();
 
         products.forEach(product => {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const productList = document.getElementById('productList');
     
     if (productList) {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch('https://usfarmconnect.onrender.com/api/products');
         const products = await response.json();
 
         products.forEach(product => {
@@ -107,7 +107,7 @@ document.getElementById('addProductForm')?.addEventListener('submit', async (e) 
     const price = document.getElementById('price').value;
     const token = localStorage.getItem('token');  // Get JWT token
 
-    const response = await fetch('http://localhost:5000/api/products/add', {
+    const response = await fetch('https://usfarmconnect.onrender.com/api/products/add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
