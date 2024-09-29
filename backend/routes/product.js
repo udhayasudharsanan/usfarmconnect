@@ -1,9 +1,9 @@
 const express = require('express');
-const Product = require('../models/Product');
+const Product = require('../models/Product');  // Make sure this model exists
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Add Product (Real-time Notification via Socket.io)
+// Add Product (Farmers only)
 router.post('/add', authMiddleware, async (req, res) => {
     if (req.user.role !== 'farmer') {
         return res.status(403).json({ msg: 'Only farmers can add products' });
@@ -21,7 +21,7 @@ router.post('/add', authMiddleware, async (req, res) => {
 
         await newProduct.save();
 
-        // Notify clients via Socket.io
+        // Emit real-time event for new product
         req.io.emit('newProduct', newProduct);
 
         res.json(newProduct);
@@ -31,7 +31,7 @@ router.post('/add', authMiddleware, async (req, res) => {
     }
 });
 
-// Get Products
+// Get Products (Consumers can view)
 router.get('/', async (req, res) => {
     try {
         const products = await Product.find().populate('farmer', 'name');
@@ -43,5 +43,6 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
+
 
 

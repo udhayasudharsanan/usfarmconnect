@@ -18,12 +18,24 @@ const io = socketIo(server, {
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://your-frontend-url.com',  // Replace with your Vercel or frontend URL
+}));
+
 
 // Routes
+// Pass io to the request object in all routes
+app.use((req, res, next) => {
+    req.io = io;  // Attach Socket.io to the request object
+    next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
+app.get('/', (req, res) => {
+    res.send('Backend is running. API is available.');
+});
 
 // MongoDB Connection
 mongoose.connect('mongodb+srv://SivaUdhi:UtSCnZrWPFjcOyiR@cluster0.psxhm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
