@@ -26,7 +26,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 
 // MongoDB Connection
-mongoose.connect('your-mongodb-uri-here', {
+mongoose.connect('mongodb+srv://SivaUdhi:UtSCnZrWPFjcOyiR@cluster0.psxhm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('MongoDB connected'))
