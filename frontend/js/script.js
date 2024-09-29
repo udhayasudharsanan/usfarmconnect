@@ -1,12 +1,12 @@
 // Signup Function
-const socket = io('https://your-backend-url.onrender.com');
+const socket = io('https://usfarmconnect.onrender.com');
 
 // Fetch and display products (Consumer and Admin)
 document.addEventListener('DOMContentLoaded', async () => {
     const productList = document.getElementById('productList');
     
     if (productList) {
-        const response = await fetch('https://your-backend-url.onrender.com/api/products');
+        const response = await fetch('https://usfarmconnect.onrender.com/api/products');
         const products = await response.json();
 
         products.forEach(product => {
