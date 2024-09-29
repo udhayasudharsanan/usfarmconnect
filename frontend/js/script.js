@@ -1,98 +1,10 @@
 // Signup Function
-document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
+const socket = io('https://your-backend-url.onrender.com');
 
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-
-    const response = await fetch('https://your-backend-url.onrender.com/api/auth/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, password, role })
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        alert('Signup successful! Please log in.');
-        window.location.href = 'login.html';  // Redirect to login after successful signup
-    } else {
-        alert('Signup failed: ' + data.msg);
-    }
-});
-
-// Login Function
-document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    const response = await fetch('https://your-backend-url.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        alert('Successfully logged in!');
-        const { token, role } = data;
-        localStorage.setItem('token', token);
-
-        // Redirect based on role
-        if (role === 'admin') {
-            window.location.href = 'admin-dashboard.html';
-        } else if (role === 'farmer') {
-            window.location.href = 'farmer-dashboard.html';
-        } else if (role === 'consumer') {
-            window.location.href = 'consumer-dashboard.html';
-        } else {
-            alert('Unknown role!');
-        }
-    } else {
-        alert('Login failed: ' + data.msg);
-    }
-});
-
-// Add Product (Farmer)
-document.getElementById('addProductForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById('productName').value;
-    const quantity = document.getElementById('quantity').value;
-    const price = document.getElementById('price').value;
-    const token = localStorage.getItem('token');  // Get the token from localStorage
-
-    const response = await fetch('https://your-backend-url.onrender.com/api/products/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token  // Include token in the headers
-        },
-        body: JSON.stringify({ name, quantity, price })
-    });
-
-    if (response.ok) {
-        alert('Product added successfully!');
-        window.location.reload();  // Reload page after adding product
-    } else {
-        const data = await response.json();
-        alert('Failed to add product: ' + data.msg);
-    }
-});
-
-// Fetch and Display Products (For Consumers)
+// Fetch and display products (Consumer and Admin)
 document.addEventListener('DOMContentLoaded', async () => {
     const productList = document.getElementById('productList');
-
+    
     if (productList) {
         const response = await fetch('https://your-backend-url.onrender.com/api/products');
         const products = await response.json();
@@ -108,6 +20,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
             productList.appendChild(productElement);
         });
+
+        // Listen for new products via Socket.io
+        socket.on('newProduct', (newProduct) => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product-card');
+            productElement.innerHTML = `
+                <h3>${newProduct.name}</h3>
+                <p>Quantity: ${newProduct.quantity}</p>
+                <p>Price: $${newProduct.price}</p>
+                <p>Farmer: ${newProduct.farmer}</p>
+            `;
+            productList.appendChild(productElement);
+        });
     }
 });
-
