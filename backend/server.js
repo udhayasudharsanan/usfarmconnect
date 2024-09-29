@@ -11,28 +11,34 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
+        origin: 'https://usfarmconnect.vercel.app',  // Allow the same frontend origin
+        methods: ["GET", "POST"],
+        credentials: true // Allow credentials if needed
     }
 });
+
 
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'https://your-frontend-url.com',  // Replace with your Vercel or frontend URL
+    origin: 'https://usfarmconnect.vercel.app',  // Allow only your frontend domain
+    methods: ['GET', 'POST'],
+    credentials: true // Allow credentials (if you are sending cookies, authorization headers)
 }));
 
 
-// Routes
-// Pass io to the request object in all routes
+// Attach Socket.io to the request object
 app.use((req, res, next) => {
-    req.io = io;  // Attach Socket.io to the request object
+    req.io = io;
     next();
 });
 
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Root route
 app.get('/', (req, res) => {
     res.send('Backend is running. API is available.');
 });
@@ -44,20 +50,22 @@ mongoose.connect('mongodb+srv://SivaUdhi:UtSCnZrWPFjcOyiR@cluster0.psxhm.mongodb
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.error(err));
 
-// Real-time connection with Socket.io
+// Socket.io real-time connections
 io.on('connection', (socket) => {
     console.log('New client connected');
 
+    // Handle disconnection
     socket.on('disconnect', () => {
         console.log('Client disconnected');
     });
 });
 
-// Listen on a dynamic port from the environment or default to 5000
+// Listen on dynamic port or port 5000
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = { io };  // Export io for use in routes
+module.exports = { io };  // Export io if needed in other modules
+
 
