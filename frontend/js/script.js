@@ -8,6 +8,9 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    console.log('Email:', email);  // Log email
+    console.log('Password:', password);  // Log password
+    
     try {
         // Send login credentials to the backend API
         const response = await fetch('https://usfarmconnect.onrender.com/api/auth/login', {
