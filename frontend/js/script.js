@@ -60,7 +60,7 @@ document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
     const role = document.getElementById('role').value;
 
     try {
-        const response = await fetch('https://your-backend-url/api/auth/signup', {
+        const response = await fetch('https://usfarmconnect.onrender.com/api/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
