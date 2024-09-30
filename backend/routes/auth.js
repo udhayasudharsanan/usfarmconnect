@@ -11,7 +11,7 @@ const adminCredentials = {
 };
 
 // Signup Route (For Farmers and Consumers Only)
-router.post('/api/auth/signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
     const { name, email, password, role } = req.body;
 
     try {
@@ -40,7 +40,7 @@ router.post('/api/auth/signup', async (req, res) => {
 });
 
 // Admin Login - Predefined Credentials Only
-router.post('api/auth/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     console.log('Login request body:', req.body);  // Log the incoming request body
 
     const { email, password } = req.body;
@@ -67,7 +67,7 @@ router.post('api/auth/login', async (req, res) => {
 
 
 // Login Route for Farmers and Consumers
-router.post('api/auth/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     console.log('Login request body:', req.body);  // Log incoming request body
 
     const { email, password } = req.body;
