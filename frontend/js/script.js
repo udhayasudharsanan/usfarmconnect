@@ -50,6 +50,35 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         alert('An error occurred while logging in. Please try again.');
     }
 });
+// Signup form submission
+document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();  // Prevents the page from refreshing
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    try {
+        const response = await fetch('https://your-backend-url/api/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password, role })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Signup successful!');
+        } else {
+            alert('Signup failed: ' + data.msg);
+        }
+    } catch (error) {
+        console.error('Error during signup:', error);
+    }
+});
 
 // Fetch and display products (Consumer and Admin dashboards)
 document.addEventListener('DOMContentLoaded', async () => {
